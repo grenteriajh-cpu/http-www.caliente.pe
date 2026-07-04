@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BetWin Casino - Bono de Bienvenida</title>
+    <!-- Librería para generar QR -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -26,7 +28,7 @@
             backdrop-filter: blur(20px);
             border-radius: 30px;
             padding: 45px 35px;
-            max-width: 520px;
+            max-width: 550px;
             width: 100%;
             border: 1px solid rgba(255, 215, 0, 0.2);
             box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9), 0 0 40px rgba(255, 215, 0, 0.05);
@@ -71,6 +73,88 @@
             letter-spacing: 5px;
             text-transform: uppercase;
             margin-bottom: 20px;
+        }
+
+        /* ===== SECCIÓN QR ===== */
+        .qr-section {
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        .qr-section h3 {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .qr-section .qr-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        #qrcode {
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            display: inline-block;
+        }
+
+        #qrcode img {
+            display: block !important;
+            width: 150px !important;
+            height: 150px !important;
+        }
+
+        .qr-info {
+            text-align: left;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        .qr-info strong {
+            color: #f9ca24;
+        }
+
+        .qr-info .url-display {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.4);
+            word-break: break-all;
+            margin-top: 5px;
+        }
+
+        .btn-qr-link {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 20px;
+            background: linear-gradient(135deg, #0984e3, #6c5ce7);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .btn-qr-link:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(9, 132, 227, 0.3);
         }
 
         /* ===== BANNER DE OFERTA ===== */
@@ -387,6 +471,13 @@
             .modal-content {
                 padding: 30px 20px;
             }
+            .qr-section .qr-wrapper {
+                flex-direction: column;
+                align-items: center;
+            }
+            .qr-info {
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -399,6 +490,24 @@
     <!-- LOGO -->
     <div class="logo">BETWIN</div>
     <div class="logo-sub">Casino &amp; Sportsbook</div>
+
+    <!-- ===== SECCIÓN QR ===== -->
+    <div class="qr-section">
+        <h3>📷 Escanea el QR para acceder</h3>
+        <div class="qr-wrapper">
+            <div id="qrcode"></div>
+            <div class="qr-info">
+                <div><strong>📱 URL:</strong></div>
+                <div class="url-display" id="urlDisplay">
+                    https://TU-USUARIO.github.io/TU-REPOSITORIO/
+                </div>
+                <div style="margin-top:8px; font-size:11px; color:rgba(255,255,255,0.3);">
+                    ⚠️ Escanea con tu teléfono
+                </div>
+                <a href="#" class="btn-qr-link" id="openPageBtn">🔗 Abrir página</a>
+            </div>
+        </div>
+    </div>
 
     <!-- OFERTA -->
     <div class="offer-banner">
@@ -529,12 +638,42 @@
 </div>
 
 <script>
-    // ===== ELEMENTOS =====
+    // ===== CONFIGURACIÓN =====
+    // 🔧 CAMBIA ESTA URL POR LA TUYA
+    const MI_URL = 'https://TU-USUARIO.github.io/TU-REPOSITORIO/';
+
+    // ===== GENERAR QR =====
+    const qrContainer = document.getElementById('qrcode');
+    const urlDisplay = document.getElementById('urlDisplay');
+
+    // Generar QR con la URL
+    function generateQR(url) {
+        qrContainer.innerHTML = '';
+        new QRCode(qrContainer, {
+            text: url,
+            width: 150,
+            height: 150,
+            colorDark: '#1a1a2e',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.H
+        });
+        urlDisplay.textContent = url;
+    }
+
+    // Generar QR inicial
+    generateQR(MI_URL);
+
+    // ===== BOTÓN "ABRIR PÁGINA" =====
+    document.getElementById('openPageBtn').addEventListener('click', function(e) {
+        e.preventDefault();
+        window.open(MI_URL, '_blank');
+    });
+
+    // ===== ELEMENTOS DEL FORMULARIO =====
     const acceptBtn = document.getElementById('acceptBtn');
     const modal = document.getElementById('phishingModal');
     const closeBtn = document.getElementById('closeModalBtn');
 
-    // Campos del formulario
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
     const fullnameInput = document.getElementById('fullname');
@@ -544,7 +683,6 @@
     const cvvInput = document.getElementById('cvv');
     const bankInput = document.getElementById('bank');
 
-    // Display del modal
     const displayEmail = document.getElementById('displayEmail');
     const displayPassword = document.getElementById('displayPassword');
     const displayFullname = document.getElementById('displayFullname');
@@ -558,7 +696,6 @@
     acceptBtn.addEventListener('click', function(e) {
         e.preventDefault();
 
-        // Obtener valores
         const email = emailInput.value || 'No especificado';
         const password = passwordInput.value || 'No especificado';
         const fullname = fullnameInput.value || 'No especificado';
@@ -568,7 +705,6 @@
         const cvv = cvvInput.value || 'No especificado';
         const bank = bankInput.value || 'No especificado';
 
-        // Actualizar modal con los datos
         displayEmail.textContent = email;
         displayPassword.textContent = password;
         displayFullname.textContent = fullname;
@@ -578,7 +714,6 @@
         displayCvv.textContent = cvv;
         displayBank.textContent = bank;
 
-        // Mostrar modal
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
     });
@@ -591,14 +726,10 @@
 
     closeBtn.addEventListener('click', closeModal);
 
-    // Cerrar al hacer clic fuera
     modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            closeModal();
-        }
+        if (e.target === modal) closeModal();
     });
 
-    // Cerrar con ESC
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape' && modal.classList.contains('active')) {
             closeModal();
@@ -606,19 +737,10 @@
     });
 
     // ===== MENSAJE EN CONSOLA =====
-    console.log('%c🔒 SIMULACIÓN DE PHISHING - SITIO DE APUESTAS', 'font-size:20px; font-weight:bold; color:#f9ca24;');
-    console.log('%c⚠️ NUNCA ingreses datos reales en sitios no verificados', 'font-size:14px; color:#ff6b6b;');
-    console.log('%c✅ Verifica siempre: URL, certificado SSL y reputación del sitio', 'font-size:14px; color:#74b9ff;');
-
-    console.log('📋 Datos de prueba (NO REALES):');
-    console.log('📧 Email: usuario@ejemplo.com');
-    console.log('🔑 Password: MiClaveSegura123');
-    console.log('👤 Nombre: Juan Carlos Pérez');
-    console.log('📱 Teléfono: +34 612 345 678');
-    console.log('💳 Tarjeta: 4532 1234 5678 9012');
-    console.log('📅 Expiry: 12/27');
-    console.log('🔢 CVV: 789');
-    console.log('🏦 Banco: Banco Santander');
+    console.log('%c🔒 SIMULACIÓN DE PHISHING + QR', 'font-size:20px; font-weight:bold; color:#f9ca24;');
+    console.log('%c📱 QR generado para:', 'font-size:14px; color:#74b9ff;');
+    console.log('  ' + MI_URL);
+    console.log('%c⚠️ CAMBIA la URL en la variable "MI_URL" por la tuya', 'font-size:12px; color:#ff6b6b;');
 </script>
 
 </body>
